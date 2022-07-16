@@ -1,4 +1,4 @@
-module timerTask
+module github.com/zcj-git520/timerTask
 
 go 1.16
 
