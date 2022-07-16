@@ -1,4 +1,4 @@
-module sysd_timerTask
+module timerTask
 
 go 1.16
 
