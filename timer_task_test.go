@@ -28,20 +28,20 @@ func printTest5()  {
 
 // 测试开始和结束任务
 func TestNewTimerTask(t *testing.T) {
-	t1 := 1 * time.Second
+	t1 := 2 * time.Second
 	tasks := []func(){printTest1, printTest2, printTest3, printTest4, printTest5}
 	timer := NewTimerTask(t1, tasks)
-	timer.Waiter.Add(2)
+	timer.Waiter.Add(1)
 	timer.start()
-	go func() {
-		select {
-		case <-time.After(5*time.Second):
-			timer.stop()
-			timer.Waiter.Done()
-			return
-		}
-
-	}()
+	//go func() {
+	//	select {
+	//	case <-time.After(5*time.Second):
+	//		timer.stop()
+	//		timer.Waiter.Done()
+	//		return
+	//	}
+	//
+	//}()
 	timer.Waiter.Wait()
 	/*
 	=== RUN   TestNewTimerTask

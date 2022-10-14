@@ -15,7 +15,7 @@ import (
 )
 
 // timer配置
-type timerConfig struct {
+type TimerConfig struct {
 	timing       time.Duration      // 定时时间
 	startTiming  time.Duration      // 定时开启定时任务时间
 	stopTiming   time.Duration      // 定时停止定时任务时间
@@ -26,29 +26,29 @@ type timerConfig struct {
 	Waiter       sync.WaitGroup
 }
 
-type Option func(*timerConfig)
+type Option func(*TimerConfig)
 
 // 添加定时开启定时任务时间
 func SetTimerStart(d time.Duration) Option {
-	return func(t *timerConfig) {
+	return func(t *TimerConfig) {
 		t.startTiming = d
 	}
 }
 
 // 添加定时停止定时任务时间
 func SetTimerStop(d time.Duration) Option {
-	return func(t *timerConfig) {
+	return func(t *TimerConfig) {
 		t.stopTiming = d
 	}
 }
 
 // 添加定时时间
-func (t *timerConfig)addTiming(d time.Duration) {
+func (t *TimerConfig)addTiming(d time.Duration) {
 	t.timing = d
 }
 
 // 任务停止
-func (t *timerConfig)stop()  {
+func (t *TimerConfig)stop()  {
 	t.runningMu.Lock()
 	defer t.runningMu.Unlock()
 	if !t.running{
@@ -61,8 +61,7 @@ func (t *timerConfig)stop()  {
 }
 
 // 任务执行
-func (t *timerConfig)run()  {
-	defer t.Waiter.Done()
+func (t *TimerConfig)run()  {
 	t.running = true
 	for {
 		timer := time.NewTimer(t.timing)
@@ -80,7 +79,7 @@ func (t *timerConfig)run()  {
 }
 
 // 任务开始
-func (t *timerConfig)start()  {
+func (t *TimerConfig)start()  {
 	t.runningMu.Lock()
 	defer t.runningMu.Unlock()
 	t.Waiter.Add(1)
@@ -93,16 +92,16 @@ func (t *timerConfig)start()  {
 
 }
 
-func (t *timerConfig)Stop() {
+func (t *TimerConfig)Stop() {
 	t.stop()
 }
 
-func (t *timerConfig)Start() {
+func (t *TimerConfig)Start() {
 	  t.start()
 }
 
 // 定时开启定时任务
-func (t *timerConfig)TimerStart() {
+func (t *TimerConfig)TimerStart() {
 	// 如果定时开启时间未开启或定时任务正在执行，直接返回
 	if t.startTiming <= 0 || t.running{
 		log.Info("The scheduled start time is not open or the scheduled task is being executed")
@@ -121,7 +120,7 @@ func (t *timerConfig)TimerStart() {
 }
 
 // 定时停止定时任务
-func (t *timerConfig)TimerStop() {
+func (t *TimerConfig)TimerStop() {
 	// 如果定时结束时间未开启或定时任务未执行，直接返回
 	if t.stopTiming <= 0 || !t.running{
 		log.Info("The timing end time is not turned on or the timing task is not executed")
@@ -140,7 +139,7 @@ func (t *timerConfig)TimerStop() {
 }
 
 // 重置定时时间
-func (t *timerConfig)Reset(d time.Duration)  {
+func (t *TimerConfig)Reset(d time.Duration)  {
 	if !t.running{
 		log.Info("The timer task is not started and cannot be stopped")
 		return
@@ -151,12 +150,12 @@ func (t *timerConfig)Reset(d time.Duration)  {
 }
 
 // 得到运行状态
-func (t *timerConfig)GetRunStatus() bool {
+func (t *TimerConfig)GetRunStatus() bool {
 	return t.running
 }
 
-func NewTimerTask(d time.Duration, tasks []func(), opts ... Option) *timerConfig {
-	timer := &timerConfig{
+func NewTimerTask(d time.Duration, tasks []func(), opts ... Option) *TimerConfig {
+	timer := &TimerConfig{
 		timing:d,
 		startTiming:-1,
 		stopTiming:-1,
